@@ -25,13 +25,15 @@ export default function Login() {
 
         // Create a new user for the quiz
         try {
-            newUser(userNameValue, quizId)
+            await newUser(userNameValue, quizId)
             nav(`/quiz/${quizId}`)
         } catch (error) {
             console.error("Error creating user:", error)
             if (error?.response?.status === 400 && error.response.data?.code === "name_exist") {
                 notyf.error("Name already exists. Please choose a different name.")
+                return
             }
+            notyf.error("Unexpected error. Please try again.")
         }
     }
     return (

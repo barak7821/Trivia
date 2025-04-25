@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css';
 import { useNavigate } from 'react-router-dom'
@@ -7,7 +7,6 @@ import { createQuiz } from '../utils/api';
 export default function CreateQuiz() {
   const nav = useNavigate()
   const notyf = new Notyf({ position: { x: 'center', y: 'top' } })
-  const [timeLimitMinutes, setTimeLimitMinutes] = useState("")
   const [questions, setQuestions] = useState([])
 
   const handleAddQuestion = () => {
@@ -20,6 +19,10 @@ export default function CreateQuiz() {
       }
     ])
   }
+
+  useEffect(() => {
+    handleAddQuestion() // Add the first question when the component mounts
+  }, [])
 
   const handleRemoveQuestion = index => {
     setQuestions(questions.filter((_, i) => i !== index))
@@ -51,7 +54,6 @@ export default function CreateQuiz() {
 
     // data to be sent to the backend
     const quizData = {
-      timeLimitMinutes: +timeLimitMinutes,
       questions: questions.map((question) => ({
         question: question.question,
         answers: [...question.answers, question.correctAnswer],
@@ -82,15 +84,6 @@ export default function CreateQuiz() {
       <div className='min-h-screen flex flex-col text-center items-center justify-center gap-6'>
         <h1 className='font-bold text-4xl text-white drop-shadow-md'>Create a Trivia Quiz</h1>
         <form className='flex flex-col items-center gap-6 w-full max-w-xl bg-white/10 backdrop-blur-md p-6 rounded-2xl shadow-xl' onSubmit={handleSubmit}>
-          <div className='text-center'>
-            <label className='block text-white text-lg font-semibold mb-1'>
-              What is the time limit for the quiz in minutes? <span className='text-sm text-gray-300'>(optional)</span>
-            </label>
-            <label className='block text-gray-200 text-sm mb-2'>
-              Leave empty for default (10 minutes), minimum if set: 1 minute
-            </label>
-            <input onChange={(e) => setTimeLimitMinutes(e.target.value)} value={timeLimitMinutes} type='number' min='1' placeholder='e.g. 5, or leave empty for default' className='w-full text-white bg-white/10 border border-gray-300 rounded-xl text-center p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-white' />
-          </div>
 
           {questions.map((question, questionIndex) => (
             <div key={questionIndex} className='w-full bg-white/10 backdrop-blur-md p-4 rounded-xl shadow-md flex flex-col gap-4 relative'>

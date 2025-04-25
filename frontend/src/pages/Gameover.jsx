@@ -19,13 +19,14 @@ export default function Gameover() {
 
     // Update player data in the database
     const updatePlayerData = async () => {
-        if (!userName && points == null) {
+        if (!userName && points == null) { // Check if userName and points are available
             console.error("User name or points are not available.")
             nav("/home")
             setIsLoading(false)
             return
         }
 
+        // Fetch player data from server
         try {
             await fetchPlayerData(quizId, userName, points)
         } catch (error) {
@@ -47,7 +48,6 @@ export default function Gameover() {
 
     // Check if quiz and attempt exist before updating
     const checkQuizAndAttempt = async () => {
-
         try {
             const quiz = await fetchQuizAndAttempt(quizId)
             const lowerName = userName?.toLowerCase()

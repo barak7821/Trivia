@@ -9,7 +9,6 @@ const joiQuestionSchema = Joi.object({
 })
 
 export const quizValidationSchema = Joi.object({
-    timeLimitMinutes: Joi.number().min(0).default(10).optional(),
     questions: Joi.array().items(joiQuestionSchema).min(1).required()
 })
 
@@ -62,10 +61,6 @@ const attemptSchema = new mongoose.Schema(
 
 const quizSchema = new mongoose.Schema(
     {
-        timeLimitMinutes: {
-            type: Number,
-            default: 10
-        },
         questions: [questionSchema],
         attempts: [attemptSchema],
         createdAt: {

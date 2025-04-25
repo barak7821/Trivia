@@ -9,13 +9,10 @@ export default function QuizRedirect() {
 
     // Check if quizId is present in the URL params and set it in the context
     const checkQuizId = () => {
-        if (quizId) {
-            setQuizId(quizId) // Set the quiz ID in the context
-            localStorage.setItem("quizId", quizId) // Set the quiz ID in local storage
-            nav(`/login/${quizId}`) // Navigate to the login page
-        } else {
-            nav("/home")
-        }
+        if (!quizId) return nav("/home")
+        setQuizId(quizId) // Set the quiz ID in the context
+        localStorage.setItem("quizId", quizId) // Set the quiz ID in local storage
+        nav(`/login/${quizId}`) // Navigate to the login page
     }
 
     useEffect(() => {

@@ -19,7 +19,7 @@ export const getQuiz = async (req, res) => {
 
 // Controller to create a new question
 export const createQuiz = async (req, res) => {
-    const { questions, timeLimitMinutes } = req.body
+    const { questions } = req.body
     try {
         if (!questions) return res.status(400).json({ message: "Missing required fields" })
 
@@ -30,7 +30,6 @@ export const createQuiz = async (req, res) => {
         }
 
         const newQuiz = new Quiz({
-            timeLimitMinutes,
             questions
         })
 

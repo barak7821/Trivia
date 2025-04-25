@@ -22,20 +22,17 @@ export default function Game() {
 
     // Get quiz questions from the database
     const getQuestions = async () => {
+        if (!userName) return nav("/home") // If userName is not set, navigate to home page
+
         // Fetch questions from the server
-        if (userName) {
-            try {
-                const data = await fetchQuestions(quizId)
-                const questions = data.questions
-                const shuffled = questions.sort(() => Math.random() - 0.5).slice(0, 10) // Shuffle and limit to 10 questions
-                setShuffledQuestions(shuffled)
-                localStorage.setItem("points", 0)
-            } catch (error) {
-                console.error("Error fetching questions:", error)
-            }
-        } else {
-            console.error("User name is not available.")
-            nav("/home")
+        try {
+            const data = await fetchQuestions(quizId)
+            const questions = data.questions
+            const shuffled = questions.sort(() => Math.random() - 0.5).slice(0, 10) // Shuffle and limit to 10 questions
+            setShuffledQuestions(shuffled)
+            localStorage.setItem("points", 0)
+        } catch (error) {
+            console.error("Error fetching questions:", error)
         }
     }
 
@@ -93,14 +90,13 @@ export default function Game() {
         // Prevent clicking during delay
         if (isAnswering) return
 
-        setIsAnswering(true)
         setSelectedAnswer(selected)
+        setIsAnswering(true)
 
         // If answer is correct, update points and save to localStorage
         if (selected === currentQuestion.correctAnswer) {
-            const currentPoints = parseInt(localStorage.getItem("points") || "0", 10)
-            const newPoints = currentPoints + 1
-            localStorage.setItem("points", newPoints)
+            const currentPoints = +localStorage.getItem("points") || 0
+            localStorage.setItem("points", currentPoints + 1)
         }
 
         // Add a 1-second delay before moving to the next question or game over screen
@@ -147,7 +143,7 @@ export default function Game() {
                         const isCorrect = selectedAnswer === answer && answer === currentQuestion.correctAnswer
                         const isWrong = selectedAnswer === answer && answer !== currentQuestion.correctAnswer
                         return (
-                            <button key={answer} disabled={isAnswering} onClick={() => checkAnswer(answer)} className={`text-white font-semibold text-lg rounded-xl py-3 px-4 transition-all shadow-md active:scale-95 disabled:scale-100 disabled:opacity-60 bg-blue-500 hover:bg-blue-600 ${isCorrect ? "bg-green-500" : ""} ${isWrong ? "bg-red-500" : ""}`}>{answer}</button>
+                            <button key={answer} disabled={isAnswering} onClick={() => checkAnswer(answer)} className={`text-white font-semibold text-lg rounded-xl py-3 px-4 shadow-md active:scale-95 disabled:scale-100 disabled:opacity-60 ${!selectedAnswer ? "bg-blue-500 hover:bg-blue-600" : isCorrect ? "bg-green-500" : ""} ${isWrong ? "bg-red-500" : "bg-blue-500"}`}>{answer}</button>
                         )
                     })}
                 </div>
